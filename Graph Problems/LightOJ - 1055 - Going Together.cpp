@@ -19,7 +19,7 @@ using namespace std;
 #define sii(a,b) scanf("%d%d",&a,&b)
 #define siii(a,b,c) scanf("%d%d%d",&a,&b,&c)
 
-
+#define ok(i,j) (i>=0 && i<n && j>=0 && j<n)
 
 template <class T> inline T imax(T a,T b){return (a>b)?a:b;}
 template <class T> inline T imin(T a,T b){return (a<b)?a:b;}
@@ -28,7 +28,13 @@ const int MAX = 100 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
-int t, n, m, caseno = 0, a, b, c, d, s;
+int t, n, m, caseno = 0, a, b, c, d;
+int Ax, Ay, Bx, By, Cx, Cy;
+
+int bfs()
+{
+
+}
 
 int main()
 {
@@ -36,35 +42,25 @@ int main()
     si(t);
     while(t--){
 
-            sii(n, m);
-            vector< vector<int> >ar(n, vector<int>(n, INF));
+            si(n);
+
+            char grid[n][n];
             for(int i=0; i<n; ++i)
-                ar[i][i] = 0;
+                scanf("%s", grid[i]);
 
-            while(m--){
+            set<pair<int, int> >s;
+            FOR(i, 0, n) FOR(j, 0, n) {
 
-                    sii(a, b);
-                    ar[a][b] = 1;
-                    ar[b][a] = 1;
+                    if(grid[i][j] == 'A')
+                        Ax = i, Ay = j;
+                    else if(grid[i][j] == 'B')
+                        Bx = i, By = j;
+                    else if(grid[i][j] == 'C')
+                        Cx = i, Cy = j;
+                    else if(grid[i][j] == 'X')
+                        s.insert(mp(i, j));
             }
 
-            sii(s, d);
-
-            //Floyd Warshall
-            for(int k=0; k<n; ++k)
-                for(int i=0; i<n; ++i)
-                    for(int j=0; j<n; ++j)
-                        ar[i][j] = min(ar[i][j], ar[i][k] + ar[k][j]);
-
-
-            int minTime = 0;
-            for(int i=0; i<n; ++i)
-
-                    if(ar[s][i] != INF  &&  ar[i][d] != INF)
-
-                            minTime = max(minTime, ar[s][i] + ar[i][d]);
-
-            printf("Case %d: %d\n", ++caseno, minTime);
     }
     return 0;
 }

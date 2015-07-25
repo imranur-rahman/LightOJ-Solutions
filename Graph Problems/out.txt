@@ -1,20 +1,13 @@
-22
-0
-36
-36
-36
-58
-11
-79
-0
-54
-44
-52
-54
-54
-0
-84
-31
 Case 1:
-Case 2:
-Case 3:
+http://uva.onlinejudge.org/
+http://topcoder.com/
+http://uva.onlinejudge.org/
+http://www.lightoj.com/
+Ignored
+http://uva.onlinejudge.org/
+http://acm.sgu.ru/
+http://uva.onlinejudge.org/
+http://www.lightoj.com/
+http://uva.onlinejudge.org/
+http://acm.sgu.ru/
+Ignored

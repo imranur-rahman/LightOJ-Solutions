@@ -1,40 +1,101 @@
-#include<bits/stdc++.h>
+#include <cstdio>
+#include <queue>
+#define FOR(i, k, n) for(int i=(int) k ; i<(int)n; ++i)
+
 using namespace std;
 
-bool isPrime(int n)
-{
-    if(n==1) return false;
-    else if(n==2) return true;
-    else{
+const int MAX = 1009, INF = 0x3f3f3f3f;
+char line[MAX][MAX];
+int d[MAX][MAX], R, C;
+int dr[] = {0, 0, 1,-1};
+int dc[] = {1,-1, 0, 0};
 
-        for(int i=2; i<n; i+=2){
-
-            if(n%i == 0){
-
-                return false;
-            }
-        }
-
-        return true;
-    }
+bool valid(int r, int c) {
+	return (r>=0 && r<R && c>=0 && c<C);
 }
 
-int main()
+bool escape(int r, int c) {
+	return (r==0 || c==0 || r==R-1 || c==C-1);
+}
+
+void print()
 {
-    int a, b;
-    int sum = 0;
-
-    scanf("%d%d", &a, &b);
-
-    for(int i=a; i<=b; i++){
-
-        if(isPrime(i)){
-
-            //cout << i << endl;
-            sum += i;
-        }
+    FOR(i, 0, R) {
+        FOR(j, 0, C)
+            printf("%d ", d[i][j]);
+        printf("\n");
     }
+    printf("\n");
+}
 
-    printf("%d", sum);
-    return 0;
+void fire() {
+	queue< int > Q;
+	int ur, uc, vr, vc, i, j;
+	for(i = 0; i < R; i++) {
+		for(j = 0; j < C; j++) {
+			if(line[i][j]=='F') {
+				d[i][j] = 0;
+				Q.push(i); Q.push(j);
+			}
+		}
+	}
+
+	while(!Q.empty()) {
+		ur = Q.front(); Q.pop();
+		uc = Q.front(); Q.pop();
+		for(i = 0; i < 4; i++) {
+			vr = ur + dr[i];
+			vc = uc + dc[i];
+			if(valid(vr, vc) && d[vr][vc] > d[ur][uc] + 1) {
+				d[vr][vc] = d[ur][uc] + 1;
+				Q.push(vr); Q.push(vc);
+			}
+		}
+	}
+}
+
+int joe(int sr, int sc) {
+	queue< int > Q;
+	int uc, ur, vc, vr, i;
+	if(escape(sr, sc)) return 0;
+	d[sr][sc] = 0;
+	Q.push(sr); Q.push(sc);
+	while(!Q.empty()) {
+		ur = Q.front(); Q.pop();
+		uc = Q.front(); Q.pop();
+		for(i = 0; i < 4; i++) {
+			vr = ur + dr[i];
+			vc = uc + dc[i];
+			if(valid(vr, vc) && d[vr][vc] > d[ur][uc] + 1) {
+				d[vr][vc] = d[ur][uc] + 1;
+				if(escape(vr, vc)) return d[vr][vc];
+				Q.push(vr); Q.push(vc);
+			}
+		}
+	}
+	return -1;
+}
+
+int main() {
+	int t, i, j, jr, jc, x, cs = 1;
+	scanf("%d", &t);
+	while(t--) {
+		scanf("%d%d", &R, &C);
+		for(i = 0; i < R; i++) {
+			scanf("%s", line[i]);
+			for(j = 0; j < C; j++) {
+				if(line[i][j]=='J') jr = i, jc = j;
+				else if(line[i][j]=='#') d[i][j] = -1;
+				else d[i][j] = INF;
+			}
+		}
+		print();
+		fire();
+		print();
+		x = joe(jr, jc);
+		print();
+		if(x < 0) printf("Case %d: IMPOSSIBLE\n", cs++);
+		else printf("Case %d: %d\n", cs++, x + 1);
+	}
+	return 0;
 }
