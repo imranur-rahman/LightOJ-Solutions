@@ -27,20 +27,19 @@ using namespace std;
 template <class T> inline T imax(T &a,T b){if(b>a) a=b;}
 template <class T> inline T imin(T &a,T b){if(b<a) a=b;}
 
-const int MAX = 1e5 + 1;
+const int MAX = 50000 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
-int t, m, caseno = 0, a, b, c, d, p, q, n;
-//string s;
-char s[MAX];
-int ar[MAX];
-int bit[MAX];
+int t, n, m, caseno = 0, a, b, c, d ;
+
+int BIT[MAX];
 
 void update(int idx, int val)
 {
-  while(idx <= n){
-    bit[idx] ^= val;
+  while(idx <= MAX)
+  {
+    BIT[idx] += val;
     idx += idx & -idx;
   }
 }
@@ -48,8 +47,9 @@ void update(int idx, int val)
 int sum(int idx)
 {
   int ret = 0;
-  while(idx > 0){
-    ret ^= bit[idx];
+  while(idx > 0)
+  {
+    ret += BIT[idx];
     idx -= idx & -idx;
   }
   return ret;
@@ -58,33 +58,25 @@ int sum(int idx)
 int main()
 {
     //ios_base::sync_with_stdio(false);
-    //freopen("in.txt", "r", stdin);
-    //freopen("out.txt", "w", stdout);
     si(t);
     while(t--){
-      scanf("%s", s);
-      n = strlen(s);
-      REP(i, n) ar[i] = s[i] - '0';
 
-      si(q);
-      CLR(bit);
-      printf("Case %d:\n", ++caseno);
+      sii(n, m);
 
-      while(q--){
-        char pic;
-        getchar();
-        scanf("%c", &pic);;
-        if(pic == 'I'){
-          sii(a, b);
-          update(a, 1);
-          update(b+1, 1);
-        }
-        else{
-          si(a);
-          printf("%d\n", ar[a-1] ^ (sum(a) & 1));
-        }
+      CLR(BIT);
+
+      REP(i, n){
+        sii(a, b);
+        update(a, 1);
+        update(b+1, -1);
+      }
+
+      //printf("Case %d:\n", ++caseno);
+
+      REP(i, m){
+        si(a);
+        printf("%d\n", sum(a));
       }
     }
-
     return 0;
 }

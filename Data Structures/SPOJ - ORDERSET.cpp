@@ -27,64 +27,35 @@ using namespace std;
 template <class T> inline T imax(T &a,T b){if(b>a) a=b;}
 template <class T> inline T imin(T &a,T b){if(b<a) a=b;}
 
-const int MAX = 1e5 + 1;
+const int MAX = 100 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
-int t, m, caseno = 0, a, b, c, d, p, q, n;
-//string s;
-char s[MAX];
-int ar[MAX];
-int bit[MAX];
-
-void update(int idx, int val)
-{
-  while(idx <= n){
-    bit[idx] ^= val;
-    idx += idx & -idx;
-  }
-}
-
-int sum(int idx)
-{
-  int ret = 0;
-  while(idx > 0){
-    ret ^= bit[idx];
-    idx -= idx & -idx;
-  }
-  return ret;
-}
+int t, n, m, caseno = 0, a, b, c, d;
 
 int main()
 {
-    //ios_base::sync_with_stdio(false);
-    //freopen("in.txt", "r", stdin);
-    //freopen("out.txt", "w", stdout);
+    ios_base::sync_with_stdio(false);
+
     si(t);
+
     while(t--){
-      scanf("%s", s);
-      n = strlen(s);
-      REP(i, n) ar[i] = s[i] - '0';
+      getchar();
+      char ch;
+      scanf("%c %d", &ch, &a);
+      
+      if(ch == 'I'){
 
-      si(q);
-      CLR(bit);
-      printf("Case %d:\n", ++caseno);
+      }
+      else if(ch == 'D'){
 
-      while(q--){
-        char pic;
-        getchar();
-        scanf("%c", &pic);;
-        if(pic == 'I'){
-          sii(a, b);
-          update(a, 1);
-          update(b+1, 1);
-        }
-        else{
-          si(a);
-          printf("%d\n", ar[a-1] ^ (sum(a) & 1));
-        }
+      }
+      else if(ch == "K"){
+
+      }
+      else {
+
       }
     }
-
     return 0;
 }

@@ -20,7 +20,6 @@ using namespace std;
 #define si(a) scanf("%d",&a)
 #define sii(a,b) scanf("%d%d",&a,&b)
 #define siii(a,b,c) scanf("%d%d%d",&a,&b,&c)
-#define TIME(a) printf("Time %d\n", clock() - a)
 
 
 
@@ -31,60 +30,37 @@ const int MAX = 1e5 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
-int t, m, caseno = 0, a, b, c, d, p, q, n;
-//string s;
-char s[MAX];
-int ar[MAX];
-int bit[MAX];
+int t, n, m, caseno = 0, a, b, c, d, q;
 
-void update(int idx, int val)
+int ar[MAX];
+int par[MAX];
+
+vector<set<int> >s;
+
+int Find(int x)
 {
-  while(idx <= n){
-    bit[idx] ^= val;
-    idx += idx & -idx;
-  }
+    if(x != par[x]) par[x] = Find(par[x]);
+    return par[x];
 }
 
-int sum(int idx)
+void Merge(int a, int b)
 {
-  int ret = 0;
-  while(idx > 0){
-    ret ^= bit[idx];
-    idx -= idx & -idx;
-  }
-  return ret;
+    /*if((a = Find(a)) == (b = Find(b))) return;
+    if(a < b) par[a] = b;
+    else par[b] = a;*/
+    par[Find(a)] = b;
 }
 
 int main()
 {
     //ios_base::sync_with_stdio(false);
-    //freopen("in.txt", "r", stdin);
-    //freopen("out.txt", "w", stdout);
-    si(t);
-    while(t--){
-      scanf("%s", s);
-      n = strlen(s);
-      REP(i, n) ar[i] = s[i] - '0';
 
-      si(q);
-      CLR(bit);
-      printf("Case %d:\n", ++caseno);
-
-      while(q--){
-        char pic;
-        getchar();
-        scanf("%c", &pic);;
-        if(pic == 'I'){
-          sii(a, b);
-          update(a, 1);
-          update(b+1, 1);
-        }
-        else{
-          si(a);
-          printf("%d\n", ar[a-1] ^ (sum(a) & 1));
-        }
-      }
+    sii(n, q);
+    REP(i, n) par[i+1] = i+1, ar[i+1] = i+1;
+    REP(i, q) {
+        scanf("%d %d", &a, &b);
+        Merge(a, b);
     }
-
+    REP(i, n) printf("%d ", Find(i+1));
     return 0;
 }

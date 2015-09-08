@@ -13,7 +13,9 @@ using namespace std;
 #define sz size()
 #define ll long long
 #define FOR(i, k, n) for(int i=(int) k ; i<(int)n; ++i)
-#define MEM(array, value) memset(array, value, sizeof(array))
+#define REP(i, n) for(int i=0; i<n; ++i)
+#define MEM(array) memset(array, -1, sizeof(array))
+#define CLR(array) memset(array, 0, sizeof(array))
 #define all(v) v.begin(), v.end()
 #define si(a) scanf("%d",&a)
 #define sii(a,b) scanf("%d%d",&a,&b)
@@ -21,48 +23,78 @@ using namespace std;
 
 
 
+
+
 template <class T> inline T imax(T a,T b){return (a>b)?a:b;}
 template <class T> inline T imin(T a,T b){return (a<b)?a:b;}
 
-const int MAX = 1e5 + 1;
+const int MAX = 1e7 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
 int t, n, m, caseno = 0, a, b, c, d;
 
-int dp[MAX][2]; // 0 -> left, 1 -> right
-int W[MAX], H[MAX];
+int lazy[4*MAX];
+set<int>s;
 
-int solve(int pos, bool t)
+void update(int id, int l, int r, int a, int b, int color)
 {
-    if(pos == n) return 0;
-    if(pos == n-1) return 1;
+    if(a>r || b<l) return;
+    if(l>=a && r<=b) {
+        lazy[id] = color;
+        return;
+    }
 
-    int &ret = dp[pos][t];
-    if(ret != -1) return ret;
+    if(lazy[id]){
 
-    ll last = W[pos - 1];
-    if(t) last += H[pos - 1]; // right e felchi
+            lazy[2*id] = lazy[2*id+1] = lazy[id];
+            lazy[id] = 0;
+    }
 
-    int ans = 0;
+    int mid = (l+r)/2;
+    update(2*id, l, mid, a, b, color);
+    update(2*id+1, mid+1, r, a, b, color);
 
-    /*if(W[pos] - H[pos] > last)
-        ans = max(ans, 1 + solve(pos + 1, 0));
-    else */if(W[pos] + H[pos] < W[pos + 1])
-        ans = max(ans, 1 + solve(pos + 1, 1));
+}
 
-    ans = max(ans, solve(pos + 1, 0));
-    return ret = ans;
+void query(int id, int l, int r)
+{
+    if(lazy[id]){
+        s.insert(lazy[id]);
+        return;
+    }
+
+    if(l == r) return;
+
+    int mid = (l+r)/2;
+    query(2*id, l, mid);
+    query(2*id+1, mid+1, r);
+
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
+    //ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    FOR(i, 0, n) cin >> W[i] >> H[i];
-    MEM(dp, -1);
-    cout << solve(1, 0) + 1;
+    si(t);
+    while(t--){
+
+            si(n);
+
+            CLR(lazy);
+
+            REP(i, n){
+
+                    sii(a, b);
+                    update(1, 1, 10000000, a, b, i+1);
+            }
+
+            s.clear();
+            query(1, 1, 10000000);
+
+            printf("%d\n", ++caseno, s.sz);
+    }
+
 
     return 0;
 }

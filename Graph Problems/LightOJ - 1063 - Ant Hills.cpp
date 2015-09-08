@@ -24,7 +24,7 @@ using namespace std;
 template <class T> inline T imax(T a,T b){return (a>b)?a:b;}
 template <class T> inline T imin(T a,T b){return (a<b)?a:b;}
 
-const int MAX = 100 + 1;
+const int MAX = 10000 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
@@ -92,7 +92,7 @@ int main()
 {
     ios_base::sync_with_stdio(false);
 
-    freopen("in.txt", "r", stdin);
+    //freopen("in.txt", "r", stdin);
     si(t);
     while(t--){
 

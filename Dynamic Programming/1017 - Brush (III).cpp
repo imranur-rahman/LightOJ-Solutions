@@ -27,63 +27,50 @@ using namespace std;
 template <class T> inline T imax(T &a,T b){if(b>a) a=b;}
 template <class T> inline T imin(T &a,T b){if(b<a) a=b;}
 
-const int MAX = 1e5 + 1;
+const int MAX = 100 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
-int t, m, caseno = 0, a, b, c, d, p, q, n;
-//string s;
-char s[MAX];
-int ar[MAX];
-int bit[MAX];
+int t, n, m, caseno = 0, a, b, c, d, w, k;
+int y[MAX], dp[MAX][MAX];
 
-void update(int idx, int val)
+int solve(int pos, int move_left)
 {
-  while(idx <= n){
-    bit[idx] ^= val;
-    idx += idx & -idx;
-  }
-}
+    if(pos == n  ||  move_left == 0) return 0;
 
-int sum(int idx)
-{
-  int ret = 0;
-  while(idx > 0){
-    ret ^= bit[idx];
-    idx -= idx & -idx;
-  }
-  return ret;
+    int &ret = dp[pos][move_left];
+    if(ret != -1) return ret;
+
+    ret = 0;
+    imax(ret, solve(pos+1, move_left)); // current pos na niye
+
+    int i, total = 0;
+    for(i=pos; i<n; ++i){
+        if(y[i] <= y[pos] + w) total++;
+        else break;
+    }
+    imax(ret, solve(i, move_left - 1) + total); // current pos niye ebong move ekta komiye
+
+    return ret;
 }
 
 int main()
 {
     //ios_base::sync_with_stdio(false);
-    //freopen("in.txt", "r", stdin);
-    //freopen("out.txt", "w", stdout);
+
     si(t);
+
     while(t--){
-      scanf("%s", s);
-      n = strlen(s);
-      REP(i, n) ar[i] = s[i] - '0';
 
-      si(q);
-      CLR(bit);
-      printf("Case %d:\n", ++caseno);
+            siii(n, w, k);
+            MEM(dp);
+            REP(i, n) {
+                sii(a, y[i]);
+            }
 
-      while(q--){
-        char pic;
-        getchar();
-        scanf("%c", &pic);;
-        if(pic == 'I'){
-          sii(a, b);
-          update(a, 1);
-          update(b+1, 1);
-        }
-        else{
-          si(a);
-          printf("%d\n", ar[a-1] ^ (sum(a) & 1));
-        }
-      }
+            sort(y, y+n);
+
+            printf("Case %d: %d\n", ++caseno, solve(0, k));
     }
 
     return 0;

@@ -27,63 +27,49 @@ using namespace std;
 template <class T> inline T imax(T &a,T b){if(b>a) a=b;}
 template <class T> inline T imin(T &a,T b){if(b<a) a=b;}
 
-const int MAX = 1e5 + 1;
+const int MAX = 1e6 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
-int t, m, caseno = 0, a, b, c, d, p, q, n;
-//string s;
-char s[MAX];
-int ar[MAX];
-int bit[MAX];
+int t, n, m, caseno = 0, a, b, c, d;
+string pattern, temp;
+int pi[2 * MAX];
 
-void update(int idx, int val)
-{
-  while(idx <= n){
-    bit[idx] ^= val;
-    idx += idx & -idx;
-  }
-}
 
-int sum(int idx)
+int failure()
 {
-  int ret = 0;
-  while(idx > 0){
-    ret ^= bit[idx];
-    idx -= idx & -idx;
-  }
-  return ret;
+    //CLR(pi);
+
+    int now = pi[0] = -1;
+    n = pattern.sz;
+
+    for(int i=1; i<n; ++i){
+
+        while(now != -1  &&  pattern[i] != pattern[now + 1])
+            now = pi[now];
+
+        if(pattern[i] == pattern[now + 1]) pi[i] = ++now;
+        else pi[i] = -1;
+
+    }
+
+    //REP(i, n) printf("%d ", pi[i]);
+    //printf("\n%d\n", pi[n-1] + 1);
+
+    return pi[n-1] + 1;
 }
 
 int main()
 {
     //ios_base::sync_with_stdio(false);
-    //freopen("in.txt", "r", stdin);
-    //freopen("out.txt", "w", stdout);
     si(t);
     while(t--){
-      scanf("%s", s);
-      n = strlen(s);
-      REP(i, n) ar[i] = s[i] - '0';
+        cin >> pattern;
+        temp = pattern;
+        reverse(all(temp));
+        pattern = temp + "#" + pattern;
 
-      si(q);
-      CLR(bit);
-      printf("Case %d:\n", ++caseno);
-
-      while(q--){
-        char pic;
-        getchar();
-        scanf("%c", &pic);;
-        if(pic == 'I'){
-          sii(a, b);
-          update(a, 1);
-          update(b+1, 1);
-        }
-        else{
-          si(a);
-          printf("%d\n", ar[a-1] ^ (sum(a) & 1));
-        }
-      }
+        printf("Case %d: %d\n", ++caseno, 2 * temp.sz - failure());
     }
 
     return 0;

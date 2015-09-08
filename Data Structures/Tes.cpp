@@ -1,98 +1,107 @@
-#define _CRT_SECURE_NO_DEPRECATE
-#include <stdio.h>
-#include <vector>
-#include <algorithm>
-#include <stdlib.h>
-#include <ctime>
-#include <set>
-#include <map>
-#include <queue>
-#include <string>
-#include <math.h>
-#include <queue>
-#include <memory.h>
-#include <iostream>
-#include <stack>
-#include <complex>
-#include <list>
-
-
+#include<bits/stdc++.h>
 using namespace std;
 
-void ASS(bool b) {
-    if (!b) {
-        ++*(int*)0;// crash
-    }
-}
+#define vi vector<int>
+#define pii pair<int,int>
+#define vpii vector<pii>
+#define vvpii vector<vpii>
+#define vvi vector<vi>
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define sz size()
+#define ll long long
+#define FOR(i, k, n) for(int i=(int) k ; i<(int)n; ++i)
+#define REP(i, n) for(int i=0; i<n; ++i)
+#define MEM(array) memset(array, -1, sizeof(array))
+#define CLR(array) memset(array, 0, sizeof(array))
+#define all(v) v.begin(), v.end()
+#define si(a) scanf("%d",&a)
+#define sii(a,b) scanf("%d%d",&a,&b)
+#define siii(a,b,c) scanf("%d%d%d",&a,&b,&c)
 
-typedef vector<int> vi;
-typedef long long LL;
-
-#define FOR(i, n) for (int i = 0; i < (int)(n); ++i)
 
 
-int posOfLast[(int)2e6]; // = {-1, -1 ....};
 
-const int n = 6;
-int a[n] = {1, 2, 3, 4, 1, 2};
-int cnt[n];
+template <class T> inline T imax(T &a,T b){if(b>a) a=b;}
+template <class T> inline T imin(T &a,T b){if(b<a) a=b;}
 
-struct Q {
-    int id;
-    int L, R;
+const int MAX = 150000 + 1;
+const ll MAXINT = 1e18;
+const int INF = 1e9;
+int MOD = 1000000007;
+
+int t, n, m, caseno = 0, a, b, c, d, q, s, pos, x, y, k;
+int ar[MAX];
+
+struct node{
+
+    int ans, prefix, suffix;
+
 };
 
-vector<Q> qq[n];
+node tree[4*MAX];
 
-vector<int> ans;
-
-void AddQ(int L, int R) {
-    Q q;
-    q.L = L;
-    q.R = R;
-
-    q.id = (int)ans.size();
-    ans.push_back(0);
-
-    qq[R].push_back(q);
+void mergeup(int id, node& l, node& r)
+{
+    tree[id].ans = abs(l.suffix - r.prefix);
+    tree[id].prefix = l.prefix;
+    tree[id].suffix = r.suffix;
 }
 
+void build(int id, int l, int r)
+{
+    if(l == r) {
+        tree[id].ans = tree[id].prefix = tree[id].suffix = ar[l];
+        return;
+    }
+
+    int mid = (l+r)/2;
+    build(2*id, l, mid);
+    build(2*id+1, mid+1, r);
+
+    mergeup(id, tree[2*id], tree[2*id+1]);
+}
+
+node mergeup(node& l, node& r)
+{
+    node tmp;
+
+    tmp.ans = abs(l.suffix - r.prefix);
+    tmp.prefix = l.prefix;
+    tmp.suffix = r.suffix;
+
+    return tmp;
+}
+
+node query(int id, int l, int r, int a, int b)
+{
+    if(l == a && r == b) return tree[id];
+
+    int mid = (l+r)/2;
+    if(b <= mid) return query(2*id, l, mid, a, b);
+    if(a > mid) return query(2*id+1, mid+1, r, a, b);
+
+    node u = query(2*id, l, mid, a, mid);
+    node v = query(2*id+1, mid+1, r, mid+1, b);
+
+    return mergeup(u, v);
+}
 
 int main()
 {
-    memset(posOfLast, 0xFF, sizeof(posOfLast)); // = {-1, -1 ....};
+    //ios_base::sync_with_stdio(false);
 
-    AddQ(1, 1);
-    AddQ(1, 5);
-    AddQ(2, 5);
-    AddQ(0, 4);
+    si(t);
+    while(t--){
 
-    for (int j = 0; j < n; ++j)
-        printf("%d ", a[j]);
-    printf("\n");
+            si(n);
+            REP(i, n) si(ar[i]);
 
-    for (int i = 0; i < n; ++i) {
-        if (posOfLast[a[i]] != -1)
-            cnt[posOfLast[a[i]]]--;
-        posOfLast[a[i]] = i;
-        cnt[posOfLast[a[i]]]++;
+            build(1, 0, n-1);
 
-        printf("i = %d\ncnt = {", i);
-        for (int j = 0; j < n; ++j)
-            printf("%d ", cnt[j]);
-        printf("// ");
-
-        for (int query = 0; query < (int)qq[i].size(); ++query) {
-            Q q = qq[i][query];
-            ASS(q.R == i); // always true;
-            int sum = 0;
-
-            for (int j = q.L; j <= q.R; j++)
-                sum += cnt[j];
-            ans[q.id] = sum;
-            printf("answer for [%d, %d] is %d; ", q.L, q.R, ans[q.id]);
-        }
-        printf("\n");
+            printf("Case %d: %d\n", ++caseno, query(1, 0, n-1, 0, n-1).ans);
     }
 
     return 0;

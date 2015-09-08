@@ -27,64 +27,63 @@ using namespace std;
 template <class T> inline T imax(T &a,T b){if(b>a) a=b;}
 template <class T> inline T imin(T &a,T b){if(b<a) a=b;}
 
-const int MAX = 1e5 + 1;
+const int MAX = 1e4 + 1;
 const ll MAXINT = 1e18;
 const int INF = 1e9;
 
-int t, m, caseno = 0, a, b, c, d, p, q, n;
-//string s;
-char s[MAX];
-int ar[MAX];
-int bit[MAX];
+int t, n, m, caseno = 0, a, b, c, d;
 
-void update(int idx, int val)
-{
-  while(idx <= n){
-    bit[idx] ^= val;
-    idx += idx & -idx;
-  }
-}
+string pref;
+int pi[MAX];
 
-int sum(int idx)
+int failure()
 {
-  int ret = 0;
-  while(idx > 0){
-    ret ^= bit[idx];
-    idx -= idx & -idx;
-  }
-  return ret;
+    int now = -1;
+    pi[0] = -1;
+
+    for(int i=1; i<n; ++i){
+
+            while(now != -1  &&  pref[now+1] != pref[i])
+
+                    now = pi[now];
+
+            if(pref[now+1] == pref[i])
+
+                    pi[i] = ++now;
+
+            else pi[i] = now = -1;
+    }
+
+    REP(i, n+1) printf("%d ", pi[i]);
+    printf("\n");
+
+    /*int a = -1;
+    for(int i = m; i <= 2*m; ++i) imax(a, pi[i]);
+    a++;*/
+    int a = *max_element(pi + m + 1, pi + m + m) + 1;
+    return m - a;
 }
 
 int main()
 {
     //ios_base::sync_with_stdio(false);
-    //freopen("in.txt", "r", stdin);
-    //freopen("out.txt", "w", stdout);
+
+    // from Shanto sir's book
+
     si(t);
     while(t--){
-      scanf("%s", s);
-      n = strlen(s);
-      REP(i, n) ar[i] = s[i] - '0';
 
-      si(q);
-      CLR(bit);
-      printf("Case %d:\n", ++caseno);
+            cin >> pref;
 
-      while(q--){
-        char pic;
-        getchar();
-        scanf("%c", &pic);;
-        if(pic == 'I'){
-          sii(a, b);
-          update(a, 1);
-          update(b+1, 1);
-        }
-        else{
-          si(a);
-          printf("%d\n", ar[a-1] ^ (sum(a) & 1));
-        }
-      }
+            reverse(all(pref));
+            m = pref.sz;
+
+            pref += " " + pref;
+            n = pref.sz;
+
+            printf("Case %d: %d\n", ++caseno, failure());
     }
+
 
     return 0;
 }
